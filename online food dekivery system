@@ -1,0 +1,240 @@
+-- Step 1: Initialize the Project Database
+CREATE DATABASE OnlineFoodDeliveryDB;
+USE OnlineFoodDeliveryDB;
+
+-- Step 2: Create Entities and Relationships
+
+-- Administrative Table
+CREATE TABLE Admin (
+    Admin_id INT PRIMARY KEY,
+    Name VARCHAR(100) NOT NULL,
+    Password VARCHAR(255) NOT NULL
+);
+
+-- User Information Table
+CREATE TABLE Customer (
+    customer_id INT PRIMARY KEY,
+    Firstname VARCHAR(50) NOT NULL,
+    Lastname VARCHAR(50) NOT NULL,
+    Address TEXT NOT NULL,
+    email VARCHAR(100) UNIQUE NOT NULL,
+    phone_no VARCHAR(15) UNIQUE NOT NULL,
+    Password VARCHAR(255) NOT NULL
+);
+
+-- Restaurant Table
+CREATE TABLE Restaurant (
+    restaurant_id INT PRIMARY KEY,
+    Name VARCHAR(100) NOT NULL,
+    Address TEXT NOT NULL,
+    phone_no VARCHAR(15) NOT NULL,
+    Password VARCHAR(255) NOT NULL
+);
+
+-- Food Classification Table
+CREATE TABLE Category (
+    Category_id INT PRIMARY KEY,
+    Name VARCHAR(50) NOT NULL,
+    restaurant_id INT,
+    FOREIGN KEY (restaurant_id) REFERENCES Restaurant(restaurant_id) ON DELETE CASCADE
+);
+
+-- Individual Dishes Table
+CREATE TABLE Menu_Item (
+    item_code INT PRIMARY KEY,
+    item_name VARCHAR(100) NOT NULL,
+    price DECIMAL(10, 2) CHECK (price > 0),
+    Category_id INT,
+    FOREIGN KEY (Category_id) REFERENCES Category(Category_id) ON DELETE CASCADE
+);
+
+-- Core Order Logging Table
+CREATE TABLE Order_details (
+    order_id INT PRIMARY KEY,
+    time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    amount DECIMAL(10, 2) NOT NULL,
+    status VARCHAR(20) DEFAULT 'Pending',
+    customer_id INT,
+    FOREIGN KEY (customer_id) REFERENCES Customer(customer_id)
+);
+
+-- Tracking Delivery Table
+CREATE TABLE Delivery_status (
+    Delivery_id INT PRIMARY KEY,
+    status VARCHAR(50) NOT NULL,
+    Address TEXT NOT NULL,
+    order_id INT UNIQUE,
+    FOREIGN KEY (order_id) REFERENCES Order_details(order_id)
+);
+
+-- Financial Transaction Table
+CREATE TABLE Payment_details (
+    payment_id INT PRIMARY KEY AUTO_INCREMENT,
+    mode VARCHAR(30) NOT NULL,
+    time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    order_id INT UNIQUE,
+    FOREIGN KEY (order_id) REFERENCES Order_details(order_id)
+);
+
+-- Bridge Table for Many-to-Many Relationship
+CREATE TABLE Orders (
+    order_id INT,
+    item_code INT,
+    quantity INT DEFAULT 1 CHECK (quantity > 0),
+    PRIMARY KEY (order_id, item_code),
+    FOREIGN KEY (order_id) REFERENCES Order_details(order_id),
+    FOREIGN KEY (item_code) REFERENCES Menu_Item(item_code)
+);
+
+-- Step 3: Verification Commands
+DESC Admin;
+DESC Customer;
+DESC Restaurant;
+DESC Category;
+DESC Menu_Item;
+DESC Order_details;
+DESC Delivery_status;
+DESC Payment_details;
+DESC Orders;
+INSERT INTO Admin VALUES
+(1, 'Admin1', 'admin123'),
+(2, 'Admin2', 'admin456'),
+(3, 'Admin3', 'admin789'),
+(4, 'SuperAdmin', 'super123');
+INSERT INTO Customer VALUES
+(101, 'Ayush', 'Sharma', 'Delhi', 'ayush@gmail.com', '9876543210', 'pass123'),
+(102, 'Rahul', 'Verma', 'Noida', 'rahul@gmail.com', '9876543211', 'pass456'),
+(103, 'Sneha', 'Singh', 'Gurgaon', 'sneha@gmail.com', '9876543212', 'pass789'),
+(104, 'Rohit', 'Kumar', 'Delhi', 'rohit@gmail.com', '9876543213', 'pass111'),
+(105, 'Priya', 'Mehta', 'Noida', 'priya@gmail.com', '9876543214', 'pass222'),
+(106, 'Aman', 'Gupta', 'Ghaziabad', 'aman@gmail.com', '9876543215', 'pass333'),
+(107, 'Neha', 'Kapoor', 'Delhi', 'neha@gmail.com', '9876543216', 'pass444'),
+(108, 'Karan', 'Malhotra', 'Faridabad', 'karan@gmail.com', '9876543217', 'pass555');
+INSERT INTO Restaurant VALUES
+(201, 'Dominos', 'Delhi', '9999999991', 'dom123'),
+(202, 'KFC', 'Noida', '9999999992', 'kfc123'),
+(203, 'Burger King', 'Gurgaon', '9999999993', 'bk123'),
+(204, 'Pizza Hut', 'Delhi', '9999999994', 'ph123'),
+(205, 'McDonalds', 'Noida', '9999999995', 'mc123'),
+(206, 'Subway', 'Delhi', '9999999996', 'sub123'),
+(207, 'Haldiram', 'Noida', '9999999997', 'hal123'),
+(208, 'Bikanervala', 'Gurgaon', '9999999998', 'bik123');
+INSERT INTO Category (Category_id, Name, restaurant_id) VALUES
+(301, 'Pizza', 201),        -- Dominos
+(302, 'Sides', 201),
+
+(303, 'Chicken', 202),      -- KFC
+(304, 'Beverages', 202),
+
+(305, 'Burgers', 203),      -- Burger King
+
+(306, 'Pizza', 204),        -- Pizza Hut
+(307, 'Desserts', 204),
+
+(308, 'Burgers', 205),      -- McDonalds
+(309, 'Fries', 205),
+
+(310, 'Sandwich', 206),     -- Subway
+(311, 'Wraps', 206),
+
+(312, 'Sweets', 207),       -- Haldiram
+(313, 'Snacks', 207),
+
+(314, 'Sweets', 208),       -- Bikanervala
+(315, 'Chaat', 208);
+INSERT INTO Menu_Item (item_code, item_name, price, Category_id) VALUES
+
+-- Dominos (Pizza, Sides)
+(401, 'Margherita Pizza', 199.00, 301),
+(402, 'Farmhouse Pizza', 299.00, 301),
+(403, 'Garlic Bread', 99.00, 302),
+(404, 'Cheese Dip', 49.00, 302),
+
+-- KFC (Chicken, Beverages)
+(405, 'Chicken Bucket', 499.00, 303),
+(406, 'Chicken Wings', 299.00, 303),
+(407, 'Pepsi', 60.00, 304),
+
+-- Burger King (Burgers)
+(408, 'Veg Burger', 149.00, 305),
+(409, 'Chicken Burger', 179.00, 305),
+
+-- Pizza Hut (Pizza, Desserts)
+(410, 'Veggie Supreme Pizza', 349.00, 306),
+(411, 'Chocolate Lava Cake', 120.00, 307),
+
+-- McDonalds (Burgers, Fries)
+(412, 'McAloo Tikki Burger', 130.00, 308),
+(413, 'French Fries', 110.00, 309),
+
+-- Subway (Sandwich, Wraps)
+(414, 'Veg Sandwich', 180.00, 310),
+(415, 'Chicken Sandwich', 220.00, 310),
+(416, 'Veg Wrap', 150.00, 311),
+(417, 'Chicken Wrap', 200.00, 311),
+
+-- Haldiram (Sweets, Snacks)
+(418, 'Gulab Jamun', 90.00, 312),
+(419, 'Samosa', 30.00, 313),
+
+-- Bikanervala (Sweets, Chaat)
+(420, 'Rasgulla', 100.00, 314),
+(421, 'Pani Puri', 50.00, 315);
+SELECT * FROM Menu_Item;
+INSERT INTO Order_details (order_id, time, amount, status, customer_id) VALUES
+(501, CURRENT_TIMESTAMP, 398.00, 'Pending', 101),
+(502, CURRENT_TIMESTAMP, 499.00, 'Delivered', 102),
+(503, CURRENT_TIMESTAMP, 328.00, 'Pending', 103),
+(504, CURRENT_TIMESTAMP, 240.00, 'Delivered', 104),
+(505, CURRENT_TIMESTAMP, 310.00, 'Pending', 105),
+(506, CURRENT_TIMESTAMP, 180.00, 'Cancelled', 106),
+(507, CURRENT_TIMESTAMP, 260.00, 'Delivered', 107),
+(508, CURRENT_TIMESTAMP, 150.00, 'Pending', 108);
+SELECT * FROM Order_details;
+INSERT INTO Delivery_status (Delivery_id, status, Address, order_id) VALUES
+(601, 'Out for Delivery', 'Delhi', 501),
+(602, 'Delivered', 'Noida', 502),
+(603, 'Preparing', 'Gurgaon', 503),
+(604, 'Delivered', 'Delhi', 504),
+(605, 'Out for Delivery', 'Noida', 505),
+(606, 'Cancelled', 'Ghaziabad', 506),
+(607, 'Delivered', 'Delhi', 507),
+(608, 'Preparing', 'Faridabad', 508);
+SELECT * FROM Delivery_status;
+INSERT INTO Payment_details (mode, order_id) VALUES
+('UPI', 501),
+('Credit Card', 502),
+('Cash on Delivery', 503),
+('Debit Card', 504),
+('UPI', 505),
+('Cash on Delivery', 506),
+('Credit Card', 507),
+('UPI', 508);
+INSERT INTO Orders (order_id, item_code, quantity) VALUES
+
+-- Order 501 (Ayush)
+(501, 401, 2),   -- 2 Margherita Pizza
+
+-- Order 502 (Rahul)
+(502, 405, 1),   -- Chicken Bucket
+
+-- Order 503 (Sneha - multiple items)
+(503, 408, 1),   -- Veg Burger
+(503, 409, 1),   -- Chicken Burger
+
+-- Order 504 (Rohit)
+(504, 407, 2),   -- Lava Cake
+
+-- Order 505 (Priya - combo order)
+(505, 401, 1),   -- Pizza
+(505, 403, 1),   -- Garlic Bread
+
+-- Order 506 (Aman)
+(506, 413, 1),   -- Fries
+
+-- Order 507 (Neha)
+(507, 410, 1),   -- Pizza Hut Pizza
+
+-- Order 508 (Karan)
+(508, 420, 2);   -- Rasgulla
+SELECT * FROM Orders;

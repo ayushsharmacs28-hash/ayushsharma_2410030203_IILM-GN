@@ -96,11 +96,13 @@ DESC Order_details;
 DESC Delivery_status;
 DESC Payment_details;
 DESC Orders;
+
 INSERT INTO Admin VALUES
 (1, 'Admin1', 'admin123'),
 (2, 'Admin2', 'admin456'),
 (3, 'Admin3', 'admin789'),
 (4, 'SuperAdmin', 'super123');
+
 INSERT INTO Customer VALUES
 (101, 'Ayush', 'Sharma', 'Delhi', 'ayush@gmail.com', '9876543210', 'pass123'),
 (102, 'Rahul', 'Verma', 'Noida', 'rahul@gmail.com', '9876543211', 'pass456'),
@@ -110,6 +112,7 @@ INSERT INTO Customer VALUES
 (106, 'Aman', 'Gupta', 'Ghaziabad', 'aman@gmail.com', '9876543215', 'pass333'),
 (107, 'Neha', 'Kapoor', 'Delhi', 'neha@gmail.com', '9876543216', 'pass444'),
 (108, 'Karan', 'Malhotra', 'Faridabad', 'karan@gmail.com', '9876543217', 'pass555');
+
 INSERT INTO Restaurant VALUES
 (201, 'Dominos', 'Delhi', '9999999991', 'dom123'),
 (202, 'KFC', 'Noida', '9999999992', 'kfc123'),
@@ -119,6 +122,8 @@ INSERT INTO Restaurant VALUES
 (206, 'Subway', 'Delhi', '9999999996', 'sub123'),
 (207, 'Haldiram', 'Noida', '9999999997', 'hal123'),
 (208, 'Bikanervala', 'Gurgaon', '9999999998', 'bik123');
+
+
 INSERT INTO Category (Category_id, Name, restaurant_id) VALUES
 (301, 'Pizza', 201),        -- Dominos
 (302, 'Sides', 201),
@@ -142,8 +147,9 @@ INSERT INTO Category (Category_id, Name, restaurant_id) VALUES
 
 (314, 'Sweets', 208),       -- Bikanervala
 (315, 'Chaat', 208);
-INSERT INTO Menu_Item (item_code, item_name, price, Category_id) VALUES
 
+
+INSERT INTO Menu_Item (item_code, item_name, price, Category_id) VALUES
 -- Dominos (Pizza, Sides)
 (401, 'Margherita Pizza', 199.00, 301),
 (402, 'Farmhouse Pizza', 299.00, 301),
@@ -180,7 +186,9 @@ INSERT INTO Menu_Item (item_code, item_name, price, Category_id) VALUES
 -- Bikanervala (Sweets, Chaat)
 (420, 'Rasgulla', 100.00, 314),
 (421, 'Pani Puri', 50.00, 315);
+
 SELECT * FROM Menu_Item;
+
 INSERT INTO Order_details (order_id, time, amount, status, customer_id) VALUES
 (501, CURRENT_TIMESTAMP, 398.00, 'Pending', 101),
 (502, CURRENT_TIMESTAMP, 499.00, 'Delivered', 102),
@@ -190,6 +198,7 @@ INSERT INTO Order_details (order_id, time, amount, status, customer_id) VALUES
 (506, CURRENT_TIMESTAMP, 180.00, 'Cancelled', 106),
 (507, CURRENT_TIMESTAMP, 260.00, 'Delivered', 107),
 (508, CURRENT_TIMESTAMP, 150.00, 'Pending', 108);
+
 SELECT * FROM Order_details;
 INSERT INTO Delivery_status (Delivery_id, status, Address, order_id) VALUES
 (601, 'Out for Delivery', 'Delhi', 501),
@@ -200,6 +209,7 @@ INSERT INTO Delivery_status (Delivery_id, status, Address, order_id) VALUES
 (606, 'Cancelled', 'Ghaziabad', 506),
 (607, 'Delivered', 'Delhi', 507),
 (608, 'Preparing', 'Faridabad', 508);
+
 SELECT * FROM Delivery_status;
 INSERT INTO Payment_details (mode, order_id) VALUES
 ('UPI', 501),
@@ -210,8 +220,9 @@ INSERT INTO Payment_details (mode, order_id) VALUES
 ('Cash on Delivery', 506),
 ('Credit Card', 507),
 ('UPI', 508);
-INSERT INTO Orders (order_id, item_code, quantity) VALUES
 
+
+INSERT INTO Orders (order_id, item_code, quantity) VALUES
 -- Order 501 (Ayush)
 (501, 401, 2),   -- 2 Margherita Pizza
 
@@ -238,3 +249,205 @@ INSERT INTO Orders (order_id, item_code, quantity) VALUES
 -- Order 508 (Karan)
 (508, 420, 2);   -- Rasgulla
 SELECT * FROM Orders;
+
+
+
+-----------------------------------------
+QUERIES TO PERFORM 
+--------------------------------------------
+# 🟢 🔹 BASIC QUERIES (1–10)
+
+```sql
+-- 1. Show all customers
+SELECT * FROM Customer;
+
+-- 2. Show all restaurants
+SELECT * FROM Restaurant;
+
+-- 3. Show all menu items
+SELECT * FROM Menu_Item;
+
+-- 4. Show all orders
+SELECT * FROM Order_details;
+
+-- 5. Show customer names only
+SELECT Firstname, Lastname FROM Customer;
+
+-- 6. Show unique cities
+SELECT DISTINCT Address FROM Customer;
+
+-- 7. Show items with price > 200
+SELECT * FROM Menu_Item WHERE price > 200;
+
+-- 8. Show delivered orders
+SELECT * FROM Order_details WHERE status = 'Delivered';
+
+-- 9. Show orders of customer 101
+SELECT * FROM Order_details WHERE customer_id = 101;
+
+-- 10. Show categories of restaurant 201
+SELECT * FROM Category WHERE restaurant_id = 201;
+```
+
+---
+
+# 🟡 🔹 INTERMEDIATE QUERIES (11–25)
+
+```sql
+-- 11. Customers from Delhi
+SELECT * FROM Customer WHERE Address = 'Delhi';
+
+-- 12. Count total customers
+SELECT COUNT(*) FROM Customer;
+
+-- 13. Count total orders
+SELECT COUNT(*) FROM Order_details;
+
+-- 14. Total revenue
+SELECT SUM(amount) AS Total_Revenue FROM Order_details;
+
+-- 15. Average order amount
+SELECT AVG(amount) FROM Order_details;
+
+-- 16. Highest order amount
+SELECT MAX(amount) FROM Order_details;
+
+-- 17. Lowest order amount
+SELECT MIN(amount) FROM Order_details;
+
+-- 18. Orders sorted by amount
+SELECT * FROM Order_details ORDER BY amount DESC;
+
+-- 19. Menu items sorted by price
+SELECT * FROM Menu_Item ORDER BY price ASC;
+
+-- 20. Count orders per status
+SELECT status, COUNT(*) FROM Order_details GROUP BY status;
+
+-- 21. Count customers per city
+SELECT Address, COUNT(*) FROM Customer GROUP BY Address;
+
+-- 22. Total items in each order
+SELECT order_id, SUM(quantity) FROM Orders GROUP BY order_id;
+
+-- 23. Show orders with amount > 300
+SELECT * FROM Order_details WHERE amount > 300;
+
+-- 24. Show items with name like 'Pizza'
+SELECT * FROM Menu_Item WHERE item_name LIKE '%Pizza%';
+
+-- 25. Show payment modes used
+SELECT DISTINCT mode FROM Payment_details;
+```
+
+---
+
+# 🔵 🔹 JOIN QUERIES (26–35)
+
+```sql
+-- 26. Customer name with order details
+SELECT c.Firstname, o.order_id, o.amount
+FROM Customer c
+JOIN Order_details o ON c.customer_id = o.customer_id;
+
+-- 27. Show items in each order
+SELECT o.order_id, m.item_name, o.quantity
+FROM Orders o
+JOIN Menu_Item m ON o.item_code = m.item_code;
+
+-- 28. Show customer + delivery status
+SELECT c.Firstname, d.status
+FROM Customer c
+JOIN Order_details o ON c.customer_id = o.customer_id
+JOIN Delivery_status d ON o.order_id = d.order_id;
+
+-- 29. Show customer + payment mode
+SELECT c.Firstname, p.mode
+FROM Customer c
+JOIN Order_details o ON c.customer_id = o.customer_id
+JOIN Payment_details p ON o.order_id = p.order_id;
+
+-- 30. Show restaurant + categories
+SELECT r.Name, c.Name
+FROM Restaurant r
+JOIN Category c ON r.restaurant_id = c.restaurant_id;
+
+-- 31. Show category + items
+SELECT c.Name, m.item_name
+FROM Category c
+JOIN Menu_Item m ON c.Category_id = m.Category_id;
+
+-- 32. Show full order details
+SELECT c.Firstname, o.order_id, m.item_name, od.quantity
+FROM Customer c
+JOIN Order_details o ON c.customer_id = o.customer_id
+JOIN Orders od ON o.order_id = od.order_id
+JOIN Menu_Item m ON od.item_code = m.item_code;
+
+-- 33. Show order + delivery + payment
+SELECT o.order_id, d.status, p.mode
+FROM Order_details o
+JOIN Delivery_status d ON o.order_id = d.order_id
+JOIN Payment_details p ON o.order_id = p.order_id;
+
+-- 34. Show restaurant + menu items
+SELECT r.Name, m.item_name
+FROM Restaurant r
+JOIN Category c ON r.restaurant_id = c.restaurant_id
+JOIN Menu_Item m ON c.Category_id = m.Category_id;
+
+-- 35. Show customer + restaurant ordered from
+SELECT c.Firstname, r.Name
+FROM Customer c
+JOIN Order_details o ON c.customer_id = o.customer_id
+JOIN Orders od ON o.order_id = od.order_id
+JOIN Menu_Item m ON od.item_code = m.item_code
+JOIN Category cat ON m.Category_id = cat.Category_id
+JOIN Restaurant r ON cat.restaurant_id = r.restaurant_id;
+```
+
+---
+
+# 🔴 🔹 ADVANCED QUERIES (36–40)
+
+```sql
+-- 36. Most ordered item
+SELECT item_code, SUM(quantity) AS total_quantity
+FROM Orders
+GROUP BY item_code
+ORDER BY total_quantity DESC
+LIMIT 1;
+
+-- 37. Customer with highest spending
+SELECT c.Firstname, SUM(o.amount) AS total_spent
+FROM Customer c
+JOIN Order_details o ON c.customer_id = o.customer_id
+GROUP BY c.customer_id
+ORDER BY total_spent DESC
+LIMIT 1;
+
+-- 38. Orders with more than 1 item
+SELECT order_id
+FROM Orders
+GROUP BY order_id
+HAVING COUNT(item_code) > 1;
+
+-- 39. Revenue per restaurant
+SELECT r.Name, SUM(o.amount) AS revenue
+FROM Restaurant r
+JOIN Category c ON r.restaurant_id = c.restaurant_id
+JOIN Menu_Item m ON c.Category_id = m.Category_id
+JOIN Orders od ON m.item_code = od.item_code
+JOIN Order_details o ON od.order_id = o.order_id
+GROUP BY r.restaurant_id;
+
+-- 40. Customers who ordered more than once
+SELECT customer_id, COUNT(*) AS total_orders
+FROM Order_details
+GROUP BY customer_id
+HAVING COUNT(*) > 1;
+```
+
+
+
+

@@ -52,6 +52,10 @@ VALUES
 (7902, 'FORD', 'ANALYST', 7566, '1981-12-03', 3000, NULL, 20),
 (7934, 'MILLER', 'CLERK', 7782, '1982-01-23', 1300, NULL, 10);
 
+-------------------------------------------------------------
+EXPERIMENT 1
+-------------------------------------------------------------
+
 SELECT * FROM EMPLOYEE;
 
 # 1. Create Employee_master table with data using Employee table.
@@ -71,6 +75,517 @@ SELECT * FROM EMPLOYEE_MASTER;
 ALTER TABLE EMPLOYEE_MASTER MODIFY SAL DECIMAL(10,2);
 SELECT * FROM EMPLOYEE_MASTER;
 
+
+
 # 5. Drop Employee_master Table.
 DROP TABLE EMPLOYEE_MASTER;
 SELECT * FROM EMPLOYEE_MASTER;
+---------------------------------------------------------------
+EXPERIMENT 2
+---------------------------------------------------------------
+# 1. List all distinct job in Employee.
+SELECT DISTINCT JOB FROM EMPLOYEE;
+
+# 2. List all information about employee in Department Number 30.
+SELECT * FROM EMPLOYEE WHERE DEPTNO = 30;
+
+# 3. Find all department names with department number greater than 20.
+SELECT DNAME, DEPTNO FROM DEPARTMENT WHERE DEPTNO > 20;
+
+# 4. Find all information about all the managers as well as the clerks in department 30.
+SELECT * FROM EMPLOYEE WHERE DEPTNO = 30 AND JOB IN('MANAGER', 'CLERK');
+
+# 5. List the Employee name, Employee numbers and department of all clerks.
+SELECT ENAME, EMPNO, DEPTNO, JOB FROM EMPLOYEE WHERE JOB = 'CLERK';
+
+# 6. Find all managers not in department 30.
+SELECT * FROM EMPLOYEE WHERE JOB = 'MANAGER' AND DEPTNO != 30; 
+
+# 7. List information about all Employees in department 10 who are not manager or clerks.
+SELECT * FROM EMPLOYEE WHERE DEPTNO = 10 AND JOB NOT IN('MANAGER', 'CLERK');
+
+# 8. Find Employees and jobs earning between 1200 and 1400.
+SELECT ENAME, JOB, SAL FROM EMPLOYEE WHERE SAL BETWEEN 1200 AND 1400;
+
+# 9. List Name and Department Number of employee who are clerks, analyst or salesman.
+SELECT ENAME, DEPTNO, JOB FROM EMPLOYEE WHERE JOB IN ('CLERK', 'ANALYST' ,'SALEMAN');
+
+# 10. List Name and Department Number of employee whose names began with M.
+SELECT ENAME ,DEPTNO FROM EMPLOYEE WHERE ENAME LIKE 'M%';
+
+---------------------------------------------------------
+EXPERIMENT 3
+---------------------------------------------------------
+# 1. List all employees and jobs in Department 30 in descending order by salary.
+SELECT ENAME, JOB, DEPTNO, SAL FROM EMPLOYEE WHERE DEPTNO = 30 ORDER BY SAL DESC;
+
+# 2. List job and Department Number of employees whose name are five letters long begin with “A” and end with “N”.
+SELECT ENAME, JOB, DEPTNO FROM EMPLOYEE WHERE ENAME LIKE 'A___N';
+
+# 3. Display the name of employees whose name start with alphabet S.
+SELECT ENAME FROM EMPLOYEE WHERE ENAME LIKE 'S%';
+
+# 4. Display the names of employees whose name ends with alphabet S.
+SELECT ENAME FROM EMPLOYEE WHERE ENAME LIKE '%S';
+
+# 5. Display the names of employees working in department number 10 or 20 or 40 or employees working as clerks, salesman or analyst.
+SELECT ENAME, DEPTNO, JOB FROM EMPLOYEE WHERE DEPTNO IN(10,20,40) OR JOB IN ('CLERK', 'SALEMAN', 'ANALYST');
+
+# 6. Display employee number and names for employees who earn commission.
+SELECT EMPNO, ENAME, COMM FROM EMPLOYEE WHERE COMM > 0 AND COMM IS NOT NULL;
+
+# 7. Display employee number and total salary for each employee.
+SELECT EMPNO, SAL + IFNULL(COMM, 0) AS TOTAL_SALARY FROM EMPLOYEE;
+
+# 8. Display employee number and annual salary for each employee.
+SELECT EMPNO, ENAME, SAL * 12 AS ANNUAL_SALARY FROM EMPLOYEE;
+
+# 9. Display the names of all employees working as clerks and drawing a salary more than 3,000.
+SELECT ENAME, SAL, JOB FROM EMPLOYEE WHERE JOB = 'CLERK' AND SAL > 3000;
+
+# 10. Display the names of employees who are working as clerk, salesman or analyst and drawing a salary more than 3,000.
+SELECT ENAME, SAL, JOB FROM EMPLOYEE WHERE JOB IN ('CLERK', 'SALEMAN', 'ANALYST') AND SAL > 3000;
+---------------------------------------------------------
+EXPERIMENT 4
+---------------------------------------------------------
+USE company2cse2;
+SELECT * FROM EMPLOYEE;
+
+# 1. Display the list of employees who have joined the company
+# before 30th June 80 or after 31st Dec 81.
+SELECT * FROM EMPLOYEE WHERE HIREDATE < '1980-06-30' OR HIREDATE > '1981-12-31';
+
+# 2. Display the names of employees whose names have second
+# alphabet A in their names.
+SELECT ENAME FROM EMPLOYEE WHERE ENAME LIKE '_A%';
+
+# 3 . Display the names of employees whose name is exactly five
+# characters in length
+SELECT ENAME FROM EMPLOYEE WHERE ENAME LIKE '_____';
+# OR 
+SELECT ENAME FROM EMPLOYEE WHERE LENGTH(ENAME) = 5;
+
+# 5. Display the names of employees who are not working as
+# salesman or clerk or analyst.
+SELECT ENAME, JOB FROM EMPLOYEE WHERE JOB NOT IN ('SALEMAN','CLERK','ANALYST');
+
+# 6. Display the name of the employee along with their annual
+# salary (sal*12). The name of the employee earning highest
+# salary should appear first.
+SELECT ENAME, SAL * 12 AS ANNUAL_SALARY FROM EMPLOYEE ORDER BY ANNUAL_SALARY DESC;
+
+# 7. Display name, sal, hra, pf, da, totalsal for each employee. The
+# output should be in the order of total sal, hra 15% of sal, da
+# 10% of sal, pf 5% of sal. Total salary will be sal+((hra+da)-pf).
+SELECT ENAME , SAL, 
+SAL * 0.15 AS HRA,
+SAL * 0.10 AS DA,
+SAL * 0.05 AS PF,
+(SAL + (SAL * 0.15) + (SAL * 0.10) - (SAL * 0.05)) AS TOTAL_SALARY
+FROM EMPLOYEE 
+ORDER BY TOTAL_SALARY DESC;
+
+# 8. Update the salary of each employee by 10% increment who are
+# not eligible for commission.
+UPDATE EMPLOYEE SET SAL = SAL * 1.10 WHERE COMM IS NULL;
+SELECT * FROM EMPLOYEE;
+
+# 9. Display those employees whose salary is more than 3000 after
+# giving 20% increment.
+SELECT ENAME , SAL, SAL * 1.20 AS INCREMENTED_SALARY 
+FROM EMPLOYEE 
+WHERE SAL * 1.20 > 3000; 
+
+# 10. Display those employees whose salary contains atleast 3 digits.
+SELECT ENAME,SAL 
+FROM EMPLOYEE WHERE 
+SAL >= 100;
+# OR 
+SELECT ENAME, SAL 
+FROM EMPLOYEE 
+WHERE LENGTH (SAL) >= 3;
+
+---------------------------------------------------------
+EXPERIMENT 5
+---------------------------------------------------------
+USE COMPANY2CSE2;
+SELECT * FROM EMPLOYEE;
+
+#1. Display the total number of employee working in the company.
+SELECT COUNT(*) AS TOTAL_COUNT FROM EMPLOYEE;
+
+#2. Display the total salary being paid to all employees.
+SELECT SUM(SAL) AS TOTAL_SALARY FROM EMPLOYEE;
+
+#3. Display the maximum salary from employee table.
+SELECT MAX(SAL) AS MAXIMUM_SALARY FROM EMPLOYEE;
+
+#4. Display the MINIMUM salary from employee table.
+SELECT MIN(SAL) AS MINIMUM_SALARY FROM EMPLOYEE;
+
+#5. Display the average salary from employee table
+SELECT AVG(SAL) AS AVERAGE_SALARY FROM EMPLOYEE;
+
+#6. Display the maximum salary being paid to clerk.
+SELECT MAX(SAL) AS CLERK_MAXIMUM_SALARY FROM EMPLOYEE
+WHERE JOB = 'CLERK';
+
+#7. Display the maximum salary being paid in dept no 20.
+SELECT MAX(SAL) AS DEPT20_MAXIMUM_SALARY FROM EMPLOYEE
+WHERE DEPTNO = 20;
+
+#8. Display the minimum salary paid to any salesman.
+SELECT MIN(SAL) AS SALESMAN_MINIMUM_SALARY FROM EMPLOYEE
+WHERE JOB = 'SALEMAN';
+
+#9. Display the average salary drawn by managers.
+SELECT AVG(SAL) AS AVERAGE_SALARY_MANAGER FROM EMPLOYEE
+WHERE JOB = 'MANAGER';
+
+#10. Display the total salary drawn by analyst working in dept no 40.
+SELECT SUM(SAL) AS TOTAL_SALARY_ANALYST FROM EMPLOYEE
+WHERE JOB = 'ANALYST'
+AND
+DEPTNO = 40;
+
+#11. Display the names of the employee in Uppercase.
+SELECT UPPER(ENAME) AS UPPER_CASE_NAMES FROM EMPLOYEE;
+
+#12. Display the names of the employee in Lowercase.
+SELECT LOWER(ENAME) AS LOWER_CASE_NAMES FROM EMPLOYEE;
+
+#13. Display the names of the employee in Proper case.
+SELECT CONCAT(UPPER(LEFT(ENAME,1)), LOWER(SUBSTRING(ENAME, 2)))
+AS PROPER_CASE FROM EMPLOYEE;
+
+#14. Display the length of Your name using appropriate function.
+SELECT LENGTH('ABHISHEK AGGARWAL') AS LENGTH_NAME; 
+
+#15. Display the length of all the employee names.
+SELECT ENAME, LENGTH(ENAME) AS NAME_LENGTH FROM EMPLOYEE;
+---------------------------------------------------------
+EXPERIMENT 6
+---------------------------------------------------------
+USE COMPANY2CSE1G1;
+SHOW TABLES;
+SELECT * FROM DEPARTMENT;
+SELECT * FROM EMPLOYEE;
+
+#1. Display empno, ename, deptno from employee table. Instead
+#   of display department numbers display the related department
+#   name (Use decode function).
+
+SELECT EMPNO, ENAME, 
+CASE DEPTNO
+	WHEN 10 THEN 'RESEARCH'
+    WHEN 20 THEN 'ACCOUNTING'
+    WHEN 30 THEN 'SALES'
+    WHEN 40 THEN 'OPERATIONS'
+END AS DNAME
+FROM EMPLOYEE;
+
+#2. Display your age in days.
+SELECT DATEDIFF(CURDATE(), '2001-07-05') AS AGE_IN_DAYS;
+
+#3. Display your age in months.
+SELECT TIMESTAMPDIFF(MONTH, '2001-07-05', CURDATE()) AS AGE_IN_MONTH;
+
+#4. Display the current date as 15th August Friday Nineteen
+#   Ninety-Seven.
+SELECT DATE_FORMAT(CURDATE(), '%D, %M, %W, %Y') AS FORMATTED_DATE;
+
+#5. Display the following output for each row from employee
+#   table.
+SELECT ENAME ,DATE_FORMAT(HIREDATE, '%D, %M, %W, %Y') AS FORMATTED_DATE
+FROM EMPLOYEE;
+
+#6. Scott has joined the company on Wednesday 13th August
+#   Nineteen Ninety (HIREDATE)
+SELECT ENAME, DATE_FORMAT(HIREDATE, '%W,%D, %M, %Y') AS 
+FORMATTED_DATE_FOR_SCOTT FROM EMPLOYEE
+WHERE ENAME = 'SCOTT';
+
+#7. Find the date for nearest Saturday after current date.
+# SUNDAY -- 0
+# MONDAY -- 1
+# WEDNESDAY -- 3
+# SATURDAY -- 7
+SELECT DATE_ADD(CURDATE(),
+ INTERVAL(7 - DAYOFWEEK(CURDATE())) DAY )
+ AS NEXT_SATURDAY;
+
+#8. Display current time.
+SELECT CURTIME();
+
+#9. Display the date three months Before the current date
+SELECT DATE_SUB(CURDATE(),INTERVAL 3 MONTH) AS 3_MONTHS_BEFORE;
+
+#10. Display those employees who joined in the company in the
+#    month of Dec.
+SELECT ENAME FROM EMPLOYEE 
+WHERE MONTH(HIREDATE) = 12;
+
+#12. Display those employees whose 10% of salary is equal to the
+#    year of joining.
+SELECT * FROM EMPLOYEE
+WHERE (SAL * 0.10) = YEAR(HIREDATE);
+
+#13. Display those employees who joined the company before 15 of
+#    the months.
+SELECT * FROM EMPLOYEE
+WHERE DAY(HIREDATE) < 15;
+
+#15. Display those employees whose joining DATE is available in
+#    deptno
+SELECT * FROM EMPLOYEE
+WHERE DATE_FORMAT(HIREDATE, '%D') IN (10,20,30,40);
+---------------------------------------------------------
+EXPERIMENT 7
+---------------------------------------------------------
+USE COMPANY2CSE2;
+SHOW TABLES;
+SELECT * FROM DEPARTMENT;
+SELECT * FROM EMPLOYEE;
+
+#1. Compute the no. of days remaining in this year.
+SELECT DATEDIFF('2026-12-31', CURDATE()) AS REMAINING_DAYS;
+
+#2. Find the highest and lowest salaries and the difference between of them.
+SELECT MAX(SAL) AS MAXIMUM_SALARY,
+MIN(SAL) AS MINIMUM_SALARY,
+MAX(SAL) - MIN(SAL) AS SALARY_DIFF
+FROM EMPLOYEE;
+
+#3. List employee whose commission is greater than 25 % of their salaries.
+SELECT * FROM EMPLOYEE
+WHERE COMM > SAL * 0.25;
+
+#4. Make a query that displays salary in dollar format.
+SELECT CONCAT('$', SAL/91) AS SALARY_IN_DOLLAR FROM EMPLOYEE;
+
+#5. Create a matrix query to display the job, the salary for that job
+#   based on department number, and the total salary for that job
+#   for all departments, giving each column an appropriate heading.
+SELECT JOB,
+SUM(CASE WHEN DEPTNO = 10 THEN SAL ELSE 0 END) AS DEPTNO_10,
+SUM(CASE WHEN DEPTNO = 20 THEN SAL ELSE 0 END) AS DEPTNO_20,
+SUM(CASE WHEN DEPTNO = 30 THEN SAL ELSE 0 END) AS DEPTNO_30,
+SUM(CASE WHEN DEPTNO = 40 THEN SAL ELSE 0 END) AS DEPTNO_40,
+SUM(SAL) AS TOTAL_SALARY_EACH_DEPARTMENT
+FROM EMPLOYEE
+GROUP BY JOB;
+
+#6. Query that will display the total no of employees, and of that total the 
+#   number who were hired in 1980,1981,1982 and 1983.
+#   Give appropriate column heading.
+SELECT YEAR(HIREDATE), COUNT(*) AS TOTAL_EMPLOYEE_OF_THAT_YEAR
+FROM EMPLOYEE
+GROUP BY YEAR(HIREDATE);
+
+#7. Query to get the last Sunday of Any Month.
+SELECT DATE_SUB(
+LAST_DAY(CURDATE()),
+INTERVAL(DAYOFWEEK(LAST_DAY(CURDATE())) - 1) DAY) AS LAST_SUNDAY;
+
+#8. Display department numbers and total number of employees working in each department.
+SELECT DEPTNO, COUNT(*) AS TOTAL_EMPLOYEE_EACH_DEPARTMENT FROM EMPLOYEE
+GROUP BY DEPTNO;
+
+#9. Display the various jobs and total number of employees within each job group.
+SELECT JOB, COUNT(*) AS TOTAL_EMPLOYEE_EACH_JOB FROM EMPLOYEE
+GROUP BY JOB;
+
+#10. Display the depart numbers and total salary for each department.
+SELECT DEPTNO, SUM(SAL) AS TOTAL_SALARY_EACH_DEPARTMENT 
+FROM EMPLOYEE
+GROUP BY DEPTNO;
+---------------------------------------------------------
+EXPERIMENT 8
+---------------------------------------------------------
+USE company2cse2;
+
+#1. Display all employees with their dept name.
+SELECT E.ENAME, 
+D.DNAME 
+FROM EMPLOYEE E
+JOIN DEPARTMENT D
+ON E.DEPTNO = D.DEPTNO;
+
+#2. Display those employees whose manager names is jones, and also display their manager name.
+SELECT e.ENAME, m.ENAME AS MANAGER_NAME
+FROM EMPLOYEE e
+JOIN EMPLOYEE m ON e.MGR = m.EMPNO
+WHERE m.ENAME = 'JONES';
+
+#3. Display employee name, his job, his dept name, his manager name, his grade and make out of an under department wise.
+SELECT e.ENAME, e.JOB, d.DNAME, m.ENAME AS MANAGER_NAME
+FROM EMPLOYEE e 
+LEFT JOIN EMPLOYEE m ON e.MGR = m.EMPNO 
+JOIN DEPARTMENT d ON e.DEPTNO = d.DEPTNO 
+ORDER BY d.DEPTNO;
+
+#4. List out all the employees name, job, and salary grade and department name for everyone in the company except ‘clerk’. Sort on salary display the highest salary.
+SELECT e.ENAME, e.JOB, d.DNAME
+FROM EMPLOYEE e
+JOIN DEPARTMENT d ON e.DEPTNO = d.DEPTNO
+WHERE e.JOB != 'CLERK'
+ORDER BY e.SAL DESC;
+
+#5. Display employee name, his job and his manager. Display also employees who are without manager.
+SELECT e.ENAME, e.JOB, m.ENAME AS MANAGER_NAME 
+FROM EMPLOYEE e 
+LEFT JOIN EMPLOYEE m ON e.MGR = m.EMPNO; 
+
+#6. List the employee name, job, annual salary, deptno, dept name and grade who earn 36000 a year or who are not clerks.
+SELECT e.ENAME, e.JOB, (e.SAL * 12) AS ANNUAL_SALARY, e.DEPTNO, d.DNAME
+FROM EMPLOYEE e 
+JOIN DEPARTMENT d ON e.DEPTNO = d.DEPTNO 
+WHERE (e.SAL * 12) = 36000 OR e.JOB != 'CLERK';
+
+#7. List ename, job, annual sal, deptno, dname and grade who earn 30000 per year and who are not clerks.
+SELECT e.ENAME, e.JOB, (e.SAL * 12) AS ANNUAL_SALARY, e.DEPTNO, d.DNAME
+FROM EMPLOYEE e
+JOIN DEPARTMENT d ON e.DEPTNO = d.DEPTNO
+WHERE (e.SAL * 12) = 30000 AND e.JOB != 'CLERK';
+
+#8. List out all employees by name and number along with their manager’s name and number also display ‘no manager’ who has no manager.
+SELECT e.ENAME, e.EMPNO, COALESCE(m.ENAME, 'no manager') AS MANAGER_NAME, m.EMPNO AS MANAGER_NUMBER 
+FROM EMPLOYEE e 
+LEFT JOIN EMPLOYEE m ON e.MGR = m.EMPNO;
+
+#9. Select dept name, dept no and sum of sal
+SELECT D.DNAME,
+D.DEPTNO,
+SUM(SAL) AS TOTAL_SALARY
+FROM DEPARTMENT D
+JOIN EMPLOYEE E 
+ON E.DEPTNO = D.DEPTNO
+GROUP BY D.DEPTNO;
+
+#10. Display employee number, name and location of the department in which he is working
+SELECT E.EMPNO, E.ENAME, D.DNAME
+FROM EMPLOYEE E 
+JOIN DEPARTMENT D
+ON E.DEPTNO = D.DEPTNO;
+
+#11. Display employee name and department name for each employee.
+SELECT E.ENAME, 
+D.DNAME 
+FROM EMPLOYEE E
+JOIN DEPARTMENT D
+ON E.DEPTNO = D.DEPTNO;
+
+---------------------------------------------------------
+EXPERIMENT 9
+---------------------------------------------------------
+USE company2cse2;
+ #1.Display the name of emp name who earns highest salary.
+SELECT ename
+FROM employee
+WHERE sal = (SELECT MAX(sal) FROM employee);
+
+#2.Display the employee number and name of employee working as clerk and earning highest salary among clerks.
+SELECT empno, ename
+FROM employee
+WHERE job = 'CLERK'
+AND sal = (SELECT MAX(sal) FROM employee WHERE job = 'CLERK');
+
+#3.Display the names of the salesman who earns a salary more than the highest salary of any clerk.
+SELECT ename
+FROM employee
+WHERE job = 'SALESMAN'
+AND sal > (SELECT MAX(sal) FROM employee WHERE job = 'CLERK');
+
+#4.Display the names of clerks who earn salary more than that of james of that of sal lesser than that of scott
+SELECT ename
+FROM employee
+WHERE job = 'CLERK'
+AND sal > (SELECT sal FROM employee WHERE ename = 'JAMES')
+AND sal < (SELECT sal FROM employee WHERE ename = 'SCOTT');
+
+#5.Display the names of employees who earn a sal more than that of james or that of salary greater than that of scott.
+SELECT ename
+FROM employee
+WHERE sal > (SELECT sal FROM employee WHERE ename = 'JAMES')
+OR sal > (SELECT sal FROM employee WHERE ename = 'SCOTT');
+
+#6.Display the names of the employees who earn highest salary in their respective departments.
+SELECT ename
+FROM employee e
+WHERE sal = (
+    SELECT MAX(sal)
+    FROM employee
+    WHERE deptno = e.deptno
+);
+
+#7.Display the names of employees who earn highest salaries in their respective job groups.
+SELECT ename
+FROM employee e
+WHERE sal = (
+    SELECT MAX(sal)
+    FROM employee
+    WHERE job = e.job
+);
+
+#8.Display the employee names who are working in accounting dept.
+SELECT ename
+FROM employee
+WHERE deptno = (
+    SELECT deptno FROM department WHERE dname = 'ACCOUNTING'
+);
+
+#9.Display the employee names who are working in chicago.
+
+#10.Display the job groups having total salary greater than the maximum salary for managers.
+SELECT job
+FROM employee
+GROUP BY job
+HAVING SUM(sal) > (
+    SELECT MAX(sal)
+    FROM employee
+    WHERE job = 'MANAGER'
+);
+---------------------------------------------------------
+EXPERIMENT 10
+---------------------------------------------------------
+
+#1.Display the names of employees from department number 10 with salary greater than that of any employee working in other departments.
+SELECT ename
+FROM employee
+WHERE deptno = 10
+AND sal > ANY (
+    SELECT sal
+    FROM employee
+    WHERE deptno <> 10
+);
+
+#2.Display the names of employee from department number 10 with salary greater than that of all employee working in other departments.
+SELECT ename
+FROM employee
+WHERE deptno = 10
+AND sal > ALL (
+    SELECT sal
+    FROM employee
+    WHERE deptno <> 10
+);
+
+#3.Display the details of employees who are in sales dept and grade is 3.
+#4.Display those who are not managers and who are managers anyone.
+SELECT ename
+FROM employee
+WHERE job <> 'MANAGER';
+
+#5.Display those employees whose manager name is jones.
+SELECT ename
+FROM employee
+WHERE mgr = (
+    SELECT empno FROM employee WHERE ename = 'JONES'
+);
+
+#6.Display ename who are working in sales dept.
+#7.Display employee name, deptname, salary and comm. For those sal in between 2000 to 5000 while location is chicago.
+#8.Display those employees whose salary greater than his manager salary.
+#9.Display those employees who are working in the same dept where his manager is working.1,2
+#10.Display grade and employees name for the dept no 10 or 30 but grade is not 4, while joined the company before 31-dec-82.
+
+
